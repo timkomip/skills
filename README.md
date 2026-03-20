@@ -5,7 +5,7 @@ Personal Claude Code skills.
 ## Install
 
 ```bash
-npx @anthropic-ai/skills install timkomip/skills commit
+npx skills@latest add timkomip/skills/commit
 ```
 
 ## Skills
