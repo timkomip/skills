@@ -1,39 +1,32 @@
 # timkomip/skills
 
-Personal Claude Code skills marketplace.
+Personal Claude Code skills.
 
-## Setup
-
-```bash
-# Add this repo as a marketplace source:
-claude plugin marketplace add timkomip/skills
-
-# Install a skill:
-claude plugin install grill-me@skills
-```
-
-## Update
+## Install
 
 ```bash
-claude plugin marketplace update skills
-claude plugin update grill-me@skills
+npx @anthropic-ai/skills install timkomip/skills commit
 ```
 
-## Available Skills
+## Skills
 
 | Skill | Description |
 |-------|-------------|
-| `grill-me` | Interview relentlessly about a plan or design until reaching shared understanding. Credit: [Matt Pocock](https://github.com/mattpocock/skills) |
+| `commit` | Break local changes into logical commits, present for review, then execute |
+
+## Recommended Skills
+
+| Skill | Source | Description |
+|-------|--------|-------------|
+| `grill-me` | [mattpocock/skills](https://github.com/mattpocock/skills) | Interview relentlessly about a plan or design until reaching shared understanding |
 
 ## Adding Skills
 
-Create a new dir under `plugins/` following the `grill-me` pattern:
+Create `skills/<name>/SKILL.md` with frontmatter:
 
-```
-plugins/<skill-name>/
-├── .claude-plugin/
-│   └── plugin.json
-└── skills/
-    └── <skill-name>/
-        └── SKILL.md
+```yaml
+---
+name: my-skill
+description: What it does and when to trigger it
+---
 ```
