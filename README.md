@@ -24,7 +24,7 @@ npx skills@latest add timkomip/skills/jira
 
 ## Adding Skills
 
-Create `skills/<name>/SKILL.md` with frontmatter:
+Create `<name>/SKILL.md` with frontmatter:
 
 ```yaml
 ---
