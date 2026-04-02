@@ -6,6 +6,7 @@ Personal Claude Code skills.
 
 ```bash
 npx skills@latest add timkomip/skills/commit
+npx skills@latest add timkomip/skills/jira
 ```
 
 ## Skills
@@ -13,6 +14,7 @@ npx skills@latest add timkomip/skills/commit
 | Skill | Description |
 |-------|-------------|
 | `commit` | Break local changes into logical commits, present for review, then execute |
+| `jira` | Jira Cloud via Atlassian CLI (acli) — create, edit, search, transition work items |
 
 ## Recommended Skills
 
