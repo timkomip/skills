@@ -30,6 +30,21 @@ acli jira auth status
 - **Parent** = epic or parent issue (use `--parent KEY`)
 - **Transitions** = status changes (e.g., "To Do" → "In Progress" → "Done")
 
+## ⚠️ Critical: Positional vs Flag Arguments
+
+Commands are **inconsistent** about how they accept work item keys:
+
+| Command | Key syntax | Example |
+|---------|-----------|---------|
+| `view` | **Positional** (no flag) | `acli jira workitem view KEY-1` |
+| `edit` | `--key` flag | `acli jira workitem edit --key KEY-1 ...` |
+| `transition` | `--key` flag | `acli jira workitem transition --key KEY-1 ...` |
+| `assign` | `--key` flag | `acli jira workitem assign --key KEY-1 ...` |
+| `delete` | `--key` flag | `acli jira workitem delete --key KEY-1 ...` |
+| `comment create` | `--key` flag | `acli jira workitem comment create --key KEY-1 ...` |
+
+**Do NOT use `--key` with `view`** — it will error. **Do NOT use positional args with `edit`, `transition`, `assign`, `delete`** — they will error.
+
 ## Rich Descriptions with ADF
 
 Jira Cloud uses **Atlassian Document Format (ADF)** for rich text. The `--description` and `--description-file` flags accept either plain text or ADF JSON.
@@ -85,14 +100,15 @@ acli jira workitem create \
 |------|---------|
 | Create work item | `acli jira workitem create --project "PROJ" --type "Story" --summary "..."` |
 | Create with parent | `acli jira workitem create --project "PROJ" --type "Story" --parent "PROJ-1" --summary "..."` |
-| View work item | `acli jira workitem view --key "PROJ-1"` |
-| Edit work item | `acli jira workitem edit --key "PROJ-1" --summary "New title"` |
+| View work item | `acli jira workitem view PROJ-1` |
+| View (JSON) | `acli jira workitem view PROJ-1 --json` |
+| Edit work item | `acli jira workitem edit --key "PROJ-1" --summary "New title" --yes` |
 | Transition status | `acli jira workitem transition --key "PROJ-1" --status "In Progress" --yes` |
 | Assign | `acli jira workitem assign --key "PROJ-1" --assignee "user@example.com"` |
 | Self-assign | `acli jira workitem assign --key "PROJ-1" --assignee "@me"` |
 | Search (JQL) | `acli jira workitem search --jql "project = PROJ AND status = 'In Progress'"` |
-| Add comment | `acli jira workitem comment add --key "PROJ-1" --body "comment text"` |
-| Link issues | `acli jira workitem link add --key "PROJ-1" --target "PROJ-2" --type "blocks"` |
+| Add comment | `acli jira workitem comment create --key "PROJ-1" --body "comment text"` |
+| Link issues | `acli jira workitem link create --out "PROJ-1" --in "PROJ-2" --type "Blocks"` |
 | Delete | `acli jira workitem delete --key "PROJ-1" --yes` |
 | List projects | `acli jira project list --recent` |
 | List sprints | `acli jira sprint list --board <id>` |
@@ -136,9 +152,12 @@ acli jira workitem create --generate-json
 
 ### View
 
+**Note: `view` takes a positional argument, NOT `--key`.**
+
 ```bash
-acli jira workitem view --key "PROJ-1"
-acli jira workitem view --key "PROJ-1" --json
+acli jira workitem view PROJ-1
+acli jira workitem view PROJ-1 --json
+acli jira workitem view PROJ-1 --fields summary,comment
 ```
 
 ### Edit
@@ -176,16 +195,20 @@ acli jira workitem search --filter 10001
 
 ### Comments
 
+**Note: subcommand is `comment create`, not `comment add`.**
+
 ```bash
-acli jira workitem comment add --key "PROJ-1" --body "This is done"
+acli jira workitem comment create --key "PROJ-1" --body "This is done"
 acli jira workitem comment list --key "PROJ-1"
 ```
 
 ### Links
 
+**Note: subcommand is `link create`, not `link add`. Uses `--out`/`--in`, not `--key`/`--target`.**
+
 ```bash
-acli jira workitem link add --key "PROJ-1" --target "PROJ-2" --type "relates to"
-acli jira workitem link add --key "PROJ-1" --target "PROJ-2" --type "blocks"
+acli jira workitem link create --out "PROJ-1" --in "PROJ-2" --type "Blocks"
+acli jira workitem link create --out "PROJ-1" --in "PROJ-2" --type "relates to"
 ```
 
 ### Attachments
@@ -214,7 +237,7 @@ acli jira sprint create --board <board-id> --name "Sprint 5" --start "2025-01-01
 | `--label "a,b"` | Comma-separated labels |
 | `--json` | JSON output |
 | `--yes` / `-y` | Skip confirmation prompts |
-| `--key "KEY-1"` | Target work item key(s), comma-separated for bulk |
+| `--key "KEY-1"` | Target work item key(s) — used by edit, transition, assign, delete, comment (NOT view) |
 | `--jql "..."` | JQL query for bulk operations |
 
 ## Tips
@@ -224,3 +247,4 @@ acli jira sprint create --board <board-id> --name "Sprint 5" --start "2025-01-01
 - The `--key` flag accepts comma-separated keys for bulk operations
 - Use `--generate-json` on create/edit to see the full JSON schema
 - JQL reference: [Atlassian JQL docs](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/)
+- When in doubt about a command's syntax, run `acli jira workitem <command> --help`
